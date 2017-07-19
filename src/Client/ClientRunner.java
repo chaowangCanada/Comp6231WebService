@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import Config.PublicParamters.*;
-import DCMS_CORBA.DCMS;
 
 /**
  * Manager Client runner, 
@@ -19,7 +18,6 @@ import DCMS_CORBA.DCMS;
 
 public class ClientRunner {
 
-	static DCMS DSMS_IMPL = null;
 
 	public static void main(String args[]) throws IOException, NotBoundException{
 		

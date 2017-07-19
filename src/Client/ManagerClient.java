@@ -24,8 +24,7 @@ import org.omg.CosNaming.NamingContextExtHelper;
 
 import Config.PublicParamters;
 import Config.PublicParamters.*;
-import DCMS_CORBA.DCMS;
-import DCMS_CORBA.DCMSHelper;
+
 
 
 /**
