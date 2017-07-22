@@ -18,12 +18,17 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.ws.WebServiceRef;
+
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 
 import Config.PublicParamters;
 import Config.PublicParamters.*;
+import server.CenterServerManagementService;
+import server.DSMSWebIntrfc;
+import server.IOException_Exception;
 
 
 
@@ -36,13 +41,13 @@ import Config.PublicParamters.*;
 
 public class ManagerClient {
 
-
 	protected static int managerIDbase =1000; // static to mark unique manager ID
 	private String managerID;	
 	private File log = null;
-	private DCMS dcms_linker = null;
+	private CenterServerManagementService csmsService;
+	private DSMSWebIntrfc csms;
 
-	public ManagerClient(String args[], Location l) throws IOException, NotBoundException{
+	public ManagerClient(Location l) throws IOException, NotBoundException{
 		managerID = l.toString() + managerIDbase;
 		log = new File(managerID+".txt");
 		if(! log.exists())
@@ -52,7 +57,9 @@ public class ManagerClient {
 				log.createNewFile();
 		}
 		managerIDbase++;
-		dcms_linker = getServerReferrence(args, managerID);
+		
+		csmsService = new CenterServerManagementService();
+		csms = csmsService.getCenterServerManagementPort();
 	}
 
 	/**
@@ -72,40 +79,6 @@ public class ManagerClient {
 		}
 	}
 	
-	/**
-	 * If managerID is valid, this function is for get the stub of that server.
-	 * @param managerID
-	 * @return
-	 * @throws Exception
-	 */
-	private DCMS getServerReferrence(String[] args, String managerID){
-		try {
-			//initial the port number of 1050;
-			Properties props = new Properties();
-	        props.put("org.omg.CORBA.ORBInitialPort", PublicParamters.ORB_INITIAL_PORT);
-	        
-			// create and initialize the ORB
-			ORB orb = ORB.init(args, props);
-
-			// get the root naming context
-			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
-			
-			// Use NamingContextExt instead of NamingContext. This is 
-			// part of the Interoperable naming Service.  
-			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
-			
-			if(managerID.substring(0, 3).equalsIgnoreCase("mtl")){
-				return DCMSHelper.narrow(ncRef.resolve_str(Location.MTL.toString()));
-			}else if(managerID.substring(0, 3).equalsIgnoreCase("lvl")){
-				return DCMSHelper.narrow(ncRef.resolve_str(Location.LVL.toString()));
-			}else if(managerID.substring(0, 3).equalsIgnoreCase("ddo")){
-				return DCMSHelper.narrow(ncRef.resolve_str(Location.DDO.toString()));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
-		return null;
-	}
 	
 	
 	public String getManagerID(){
@@ -146,10 +119,11 @@ public class ManagerClient {
 	 * @throws RemoteException
 	 * @throws IOException
 	 * @throws NotBoundException
+	 * @throws IOException_Exception 
 	 */
 	public void createTRecord(String firstName, String lastName, String address, 
-			  					String phone, Specialization special, Location loc) throws RemoteException, IOException, NotBoundException{
-		String result = dcms_linker.createTRecord(this.managerID, firstName, lastName, address, phone, special.toString(), loc.toString());
+			  					String phone, Specialization special, Location loc) throws RemoteException, IOException, NotBoundException, IOException_Exception{
+		String result = csms.createTRecord(this.managerID, firstName, lastName, address, phone, special.toString(), loc.toString());
 		System.out.println(result);
 		writeToLog(result);
 		
@@ -165,10 +139,11 @@ public class ManagerClient {
 	 * @throws IOException
 	 * @throws RemoteException
 	 * @throws NotBoundException
+	 * @throws IOException_Exception 
 	 */
 	public void createSRecord(String firstName, String lastName, Course course, 
-								Status status, String statusdate) throws IOException, RemoteException, NotBoundException{
-		String reply = dcms_linker.createSRecord(this.managerID, firstName, lastName, course.toString(), status.toString(), statusdate);
+								Status status, String statusdate) throws IOException, RemoteException, NotBoundException, IOException_Exception{
+		String reply = csms.createSRecord(this.managerID, firstName, lastName, course.toString(), status.toString(), statusdate);
 		System.out.println(reply);
 		writeToLog(reply);
 	}
@@ -178,9 +153,10 @@ public class ManagerClient {
 	 * @throws IOException
 	 * @throws RemoteException
 	 * @throws NotBoundException
+	 * @throws IOException_Exception 
 	 */
-	public void getRecordCounts() throws IOException, RemoteException, NotBoundException{
-		String reply = dcms_linker.getRecordCounts(this.managerID);
+	public void getRecordCounts() throws IOException, RemoteException, NotBoundException, IOException_Exception{
+		String reply = csms.getRecordCounts(this.managerID);
 		System.out.println(reply);
 		writeToLog(reply);
 	}
@@ -193,9 +169,10 @@ public class ManagerClient {
 	 * @throws IOException
 	 * @throws RemoteException
 	 * @throws NotBoundException
+	 * @throws IOException_Exception 
 	 */
-	public void EditRecord(String recordID, String fieldName, String newValue) throws IOException, RemoteException, NotBoundException{
-		String reply = dcms_linker.editRecord(this.managerID,recordID, fieldName, newValue);
+	public void EditRecord(String recordID, String fieldName, String newValue) throws IOException, RemoteException, NotBoundException, IOException_Exception{
+		String reply = csms.editRecord(this.managerID,recordID, fieldName, newValue);
 		System.out.println(reply);
 		writeToLog(reply);
 	}
@@ -208,9 +185,10 @@ public class ManagerClient {
 	 * @throws IOException
 	 * @throws RemoteException
 	 * @throws NotBoundException
+	 * @throws IOException_Exception 
 	 */
-	public void transferRecord(String recordID, String remoteCenterServerName) throws IOException, RemoteException, NotBoundException{
-		String reply = dcms_linker.transferRecord(this.managerID, recordID, remoteCenterServerName);
+	public void transferRecord(String recordID, String remoteCenterServerName) throws IOException, RemoteException, NotBoundException, IOException_Exception{
+		String reply = csms.transferRecord(this.managerID, recordID, remoteCenterServerName);
 		System.out.println(reply);
 		writeToLog(reply);
 	}

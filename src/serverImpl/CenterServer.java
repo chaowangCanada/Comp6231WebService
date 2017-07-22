@@ -1,4 +1,4 @@
-package Server;
+package serverImpl;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,12 +27,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
+
 import Config.*;
 import Config.PublicParamters.*;
 import Record.*;
 
 /**
- * Server class, using CORBA, and UDP, for server-server communication
+ * Server class, using Webservice, and UDP, for server-server communication
  * @author Chao
  *
  */
@@ -57,24 +61,6 @@ public class CenterServer{
 		recordData = new HashMap<Character, LinkedList<Record>>();
 	}
 	
-	
-	/**
-	 *  create registry, corba binding with registry
-	 * @throws Exception
-	 */
-	public void exportServer(String[] args) throws Exception {
-
-		try {
-
-		} catch (Exception e) {
-			System.err.println("ERROR: " + e);
-	        e.printStackTrace(System.out);
-		}
-
-		System.out.println("Center Server " +location.toString()+" Exiting ...");
-	}
-	
-
 	// create new thread wrapper class
 	public void openUDPListener(){
 
@@ -139,10 +125,6 @@ public class CenterServer{
 		}
 	}
 		
-	/*
-	 * (non-Javadoc)
-	 * @see Assignment2.DCMSOperation#createTRecord(java.lang.String, java.lang.String, java.lang.String, java.lang.String, Assignment1.PublicParamters.Specialization, Assignment1.PublicParamters.Location)
-	 */
 	public String createTRecord(String managerId, String firstName, String lastName, String address, 
 							  String phone, String specialization, String location) throws IOException {
 		if(location.equalsIgnoreCase(this.getLocation().toString()) ){
@@ -165,10 +147,6 @@ public class CenterServer{
 		return "failed to write Teacher Record";
 	}
 	
-	/*
-	 * 
-	 * @see Assignment2.DCMSInterface#createSRecord(java.lang.String, java.lang.String, Assignment1.PublicParamters.Course, Assignment1.PublicParamters.Status, java.lang.String)
-	 */
 	public String createSRecord(String managerId, String firstName, String lastName, String courseRegistered, 
 								String status, String statusdate) throws IOException{
 		this.writeToLog("Manager: "+ managerId + " "+ location.toString() + " creates Student record.");
@@ -190,14 +168,10 @@ public class CenterServer{
 	}
 	
 	
-	/*
-	 * @return message for manager log
-	 * @see Assignment2.DCMSOperation#getRecordCounts()
-	 */
 	public String getRecordCounts(String managerId) throws IOException{
 		this.writeToLog("try to count all record at "+ location.toString());
 		String output = this.location.toString() + " " + recordCount + ", ";
-		if(ServerRunner.serverList.size() ==1 ){
+		if(CenterServerManagement.serverList.size() ==1 ){
 			return output;
 		}
 		// send request using multi threading
@@ -222,7 +196,7 @@ public class CenterServer{
 //			pool.shutdown();
 //		}
 		// send request one by one, no threading
-		for(CenterServer server : ServerRunner.serverList){
+		for(CenterServer server : CenterServerManagement.serverList){
 			if(server.getLocation() !=this.getLocation()){
 				output += server.getLocation().toString() + " " + requestRecordCounts(server) + ",";
 			}
@@ -232,7 +206,7 @@ public class CenterServer{
 	}
 
 
-
+	
 	private class RecordCountRequest implements Callable<String>{
 		
 		private CenterServer server;
@@ -317,8 +291,6 @@ public class CenterServer{
 		
 	}
 	
-	
-	@Override
 	public String editRecord(String managerId, String recordID, String fieldName, String newValue) throws IOException{
 		this.writeToLog("try to edit record for "+recordID);
 		String output = new String();
@@ -353,9 +325,7 @@ public class CenterServer{
 
 	}
 	
-
-	@Override
-	public String transferRecord(String managerId, String recordID, String remoteClinicServerName) {
+	public String transferRecord(String managerId, String recordID, String remoteCenterServerName) {
 
 		Iterator it = recordData.entrySet().iterator();
 		while(it.hasNext()){
@@ -368,15 +338,15 @@ public class CenterServer{
 				   while(listIt.hasNext()){
 					   Record record = (Record) listIt.next();
 					   if(record.getRecordID().equalsIgnoreCase(recordID) &&
-							   (remoteClinicServerName.equalsIgnoreCase(Location.MTL.toString()) ||
-							    remoteClinicServerName.equalsIgnoreCase(Location.LVL.toString()) ||
-							    remoteClinicServerName.equalsIgnoreCase(Location.DDO.toString()))){
-						   if(! remoteClinicServerName.equalsIgnoreCase(this.location.toString())){
-								String output = "Manager: "+ managerId + " change " + recordID +" locaiton to "+ remoteClinicServerName;
-								for(CenterServer server : ServerRunner.serverList){
-									if(server.getLocation() == Location.valueOf(remoteClinicServerName)){
+							   (remoteCenterServerName.equalsIgnoreCase(Location.MTL.toString()) ||
+							    remoteCenterServerName.equalsIgnoreCase(Location.LVL.toString()) ||
+							    remoteCenterServerName.equalsIgnoreCase(Location.DDO.toString()))){
+						   if(! remoteCenterServerName.equalsIgnoreCase(this.location.toString())){
+								String output = "Manager: "+ managerId + " change " + recordID +" locaiton to "+ remoteCenterServerName;
+								for(CenterServer server : CenterServerManagement.serverList){
+									if(server.getLocation() == Location.valueOf(remoteCenterServerName)){
 										if(record instanceof TeacherRecord) 
-											((TeacherRecord)record).setLocation(remoteClinicServerName);
+											((TeacherRecord)record).setLocation(remoteCenterServerName);
 								  		requestCreateRecord(server, record, managerId);
 								  		listIt.remove();
 								  		recordCount --;
@@ -429,7 +399,7 @@ public class CenterServer{
 								   newValue = newValue.toUpperCase(); // location are all upper case
 								   ((TeacherRecord)record).setLocation(newValue);
 				        	  		String output = recordID+"'s location is changed to "+((TeacherRecord)record).getLocation().toString();
-				        			for(CenterServer server : ServerRunner.serverList){
+				        			for(CenterServer server : CenterServerManagement.serverList){
 				        				if(server.getLocation() == Location.valueOf(newValue)){
 						        	  		requestCreateRecord(server, record, managerID);
 						        	  		listIt.remove();
@@ -559,7 +529,4 @@ public class CenterServer{
 		this.recordCount = recordCount;
 	}
 
-
-	
-	
 }

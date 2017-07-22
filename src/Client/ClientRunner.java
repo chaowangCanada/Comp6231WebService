@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import Config.PublicParamters.*;
+import server.IOException_Exception;
 
 /**
  * Manager Client runner, 
@@ -101,7 +102,7 @@ public class ClientRunner {
 				if (userInput.equals("MTL")||userInput.equals("LVL")||userInput.equals("DDO"))
 				{
 					Location loc = Location.valueOf(userInput.toUpperCase());
-					ManagerClient client = new ManagerClient(args,loc);
+					ManagerClient client = new ManagerClient(loc);
 					managerList.put(client.getManagerID(), client);
 					client.writeToLog("Create new account. Your manager id is "+ client.getManagerID());
 					System.out.println("Your account is created. Your manager id is "+ client.getManagerID());
@@ -152,7 +153,7 @@ public class ClientRunner {
 		System.out.println("3. Exit");
 	}
 	
-	private static void menuLevel2(Scanner keyboard, ManagerClient client) throws ParseException, IOException, NotBoundException { //, DSMSInterface server
+	private static void menuLevel2(Scanner keyboard, ManagerClient client) throws ParseException, IOException, NotBoundException, IOException_Exception { //, DSMSInterface server
 		int userChoice;
 		while(true){
 			System.out.println("Please enter your operation  (1-4) ");

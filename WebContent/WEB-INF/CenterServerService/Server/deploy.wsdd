@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Use this file to deploy some handlers/chains and services      --><!-- Two ways to do this:                                           --><!--   java org.apache.axis.client.AdminClient deploy.wsdd          --><!--      after the axis server is running                          --><!-- or                                                             --><!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   --><!--      from the same directory that the Axis engine runs         --><deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from CenterServerService WSDL service -->
+
+  <service name="CenterServer" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://Server"/>
+      <parameter name="wsdlServiceElement" value="CenterServerService"/>
+      <parameter name="schemaQualified" value="http://Server"/>
+      <parameter name="wsdlServicePort" value="CenterServer"/>
+      <parameter name="className" value="Server.CenterServer"/>
+      <parameter name="wsdlPortType" value="CenterServer"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation xmlns:operNS="http://Server" xmlns:retNS="http://Server" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="createSRecord" qname="operNS:createSRecord" returnQName="retNS:createSRecordReturn" returnType="rtns:string" soapAction="">
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:managerId" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:firstName" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:lastName" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:courseRegistered" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:status" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:statusdate" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://Server" xmlns:retNS="http://Server" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="getRecordCounts" qname="operNS:getRecordCounts" returnQName="retNS:getRecordCountsReturn" returnType="rtns:string" soapAction="">
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:managerId" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://Server" xmlns:retNS="http://Server" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="editRecord" qname="operNS:editRecord" returnQName="retNS:editRecordReturn" returnType="rtns:string" soapAction="">
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:managerId" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:recordID" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:fieldName" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:newValue" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://Server" xmlns:retNS="http://Server" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="transferRecord" qname="operNS:transferRecord" returnQName="retNS:transferRecordReturn" returnType="rtns:string" soapAction="">
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:managerId" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:recordID" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:remoteClinicServerName" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://Server" xmlns:retNS="http://Server" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="createTRecord" qname="operNS:createTRecord" returnQName="retNS:createTRecordReturn" returnType="rtns:string" soapAction="">
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:managerId" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:firstName" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:lastName" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:address" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:phone" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:specialization" type="tns:string"/>
+        <parameter xmlns:pns="http://Server" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:location" type="tns:string"/>
+      </operation>
+      <parameter name="allowedMethods" value="getRecordCounts editRecord createSRecord transferRecord createTRecord"/>
+
+  </service>
+</deployment>
