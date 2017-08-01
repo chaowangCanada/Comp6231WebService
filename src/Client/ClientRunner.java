@@ -6,8 +6,8 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import ClientGen.IOException_Exception;
 import Config.PublicParamters.*;
-import server.IOException_Exception;
 
 /**
  * Manager Client runner, 
@@ -20,10 +20,10 @@ import server.IOException_Exception;
 public class ClientRunner {
 
 
-	public static void main(String args[]) throws IOException, NotBoundException{
+	public static void main(String args[]) throws IOException, NotBoundException, IOException_Exception{
 		
 //			
-//		ManagerClient mtlManager1 = new ManagerClient(args, Location.MTL);
+//		ManagerClient mtlManager1 = new ManagerClient(Location.MTL);
 ////		ManagerClient mtlManager2 = new ManagerClient(args, Location.MTL);
 ////		ManagerClient lvlManager1 = new ManagerClient(args, Location.LVL);
 ////		ManagerClient lvlManager2 = new ManagerClient(args,Location.LVL);
@@ -62,6 +62,7 @@ public class ClientRunner {
 ////		ddoManager2.getRecordCounts();
 ////		ddoManager1.EditRecord("SR10008", "status date", "2010-01-01");
 ////		ddoManager2.createSRecord("Student3", "Student3", Course.FRENCH, Status.ACTIVE, "2017-May-1");
+
 
 		 //TUI menu
 	try{
@@ -230,6 +231,6 @@ public class ClientRunner {
 					
 			}
 		}	
+			
 	}
-
 }

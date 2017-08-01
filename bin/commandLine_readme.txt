@@ -1,1 +1,0 @@
-wsimport -keep -verbose http://localhost:8080/Comp6231WebService/services/CenterServerManagement?wsdl

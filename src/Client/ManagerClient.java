@@ -18,17 +18,13 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.ws.WebServiceRef;
-
-import org.omg.CORBA.ORB;
-import org.omg.CosNaming.NamingContextExt;
-import org.omg.CosNaming.NamingContextExtHelper;
 
 import Config.PublicParamters;
 import Config.PublicParamters.*;
-import server.CenterServerManagementService;
-import server.DSMSWebIntrfc;
-import server.IOException_Exception;
+import ClientGen.CenterServerManagementService;
+import ClientGen.DSMSWebIntrfc;
+import ClientGen.IOException_Exception;
+import server.CenterServerManagement;
 
 
 
@@ -59,7 +55,7 @@ public class ManagerClient {
 		managerIDbase++;
 		
 		csmsService = new CenterServerManagementService();
-		csms = csmsService.getCenterServerManagementPort();
+		csms =  csmsService.getCenterServerManagementPort();
 	}
 
 	/**
@@ -108,6 +104,174 @@ public class ManagerClient {
 		managerID = l.toString() + tmp;
 	}
 	
+//	/**
+//	 * manager side call Server createTRecord through orb obj
+//	 * @param firstName
+//	 * @param lastName
+//	 * @param address
+//	 * @param phone
+//	 * @param special
+//	 * @param loc
+//	 * @throws RemoteException
+//	 * @throws IOException
+//	 * @throws NotBoundException
+//	 * @throws IOException_Exception 
+//	 */
+//	public void createTRecord(String firstName, String lastName, String address, 
+//			  					String phone, Specialization special, Location loc) throws RemoteException, IOException, NotBoundException, IOException_Exception {
+//		
+//		Thread thread =new Thread(this.managerID){
+//			public void run(){
+//				String result;
+//				try {
+//					result = csms.createTRecord(getName(), firstName, lastName, address, phone, special.toString(), loc.toString());
+//					System.out.println(result);
+//					writeToLog(result);
+//					if(!result.isEmpty()){
+//						Thread.currentThread().interrupt();
+//					}
+//				} catch (IOException_Exception e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//			}
+//		};
+//		thread.start();
+//	}
+//	
+//	/**
+//	 * manager side call Server createSRecord through orb obj
+//	 * @param firstName
+//	 * @param lastName
+//	 * @param course
+//	 * @param status
+//	 * @param statusdate
+//	 * @throws IOException
+//	 * @throws RemoteException
+//	 * @throws NotBoundException
+//	 * @throws IOException_Exception 
+//	 */
+//	public void createSRecord(String firstName, String lastName, Course course, 
+//								Status status, String statusdate) throws IOException, RemoteException, NotBoundException, IOException_Exception {
+//		
+//		Thread thread =new Thread(this.managerID){
+//			public void run(){
+//				try {
+//					String reply = csms.createSRecord(getName(), firstName, lastName, course.toString(), status.toString(), statusdate);
+//					System.out.println(reply);
+//					writeToLog(reply);
+//					if(!reply.isEmpty()){
+//						Thread.currentThread().interrupt();
+//					}
+//				} catch (IOException_Exception e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//			}
+//		};
+//		thread.start();
+//
+//	}
+//	
+//	/**
+//	 * manager side call Server getRecordCounts through interface
+//	 * @throws IOException
+//	 * @throws RemoteException
+//	 * @throws NotBoundException
+//	 * @throws IOException_Exception 
+//	 */
+//	public void getRecordCounts() throws IOException, RemoteException, NotBoundException, IOException_Exception {
+//		
+//		Thread thread =new Thread(this.managerID){
+//			public void run(){
+//				try {
+//					String reply = csms.getRecordCounts(getName());
+//					System.out.println(reply);
+//					writeToLog(reply);
+//					if(!reply.isEmpty()){
+//						Thread.currentThread().interrupt();
+//					}
+//				} catch (IOException_Exception e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//			}
+//		};
+//		thread.start();
+//
+//	}
+//	
+//	/**
+//	 * manager side call Server EditRecord through orb obj
+//	 * @param recordID
+//	 * @param fieldName
+//	 * @param newValue
+//	 * @throws IOException
+//	 * @throws RemoteException
+//	 * @throws NotBoundException
+//	 * @throws IOException_Exception 
+//	 */
+//	public void EditRecord(String recordID, String fieldName, String newValue) throws IOException, RemoteException, NotBoundException, IOException_Exception {
+//		
+//		Thread thread =new Thread(this.managerID){
+//			public void run(){
+//				try {
+//					String reply = csms.editRecord(getName(),recordID, fieldName, newValue);
+//					System.out.println(reply);
+//					writeToLog(reply);
+//					if(!reply.isEmpty()){
+//						Thread.currentThread().interrupt();
+//					}
+//				} catch (IOException_Exception e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//			}
+//		};
+//		thread.start();
+//
+//	}
+//
+//	/**
+//	 * manager side call Server Transfer record through orb obj
+//	 * @param recordID
+//	 * @param fieldName
+//	 * @param newValue
+//	 * @throws IOException
+//	 * @throws RemoteException
+//	 * @throws NotBoundException
+//	 * @throws IOException_Exception 
+//	 */
+//	public void transferRecord(String recordID, String remoteCenterServerName) throws IOException, RemoteException, NotBoundException, IOException_Exception {
+//		Thread thread =new Thread(this.managerID){
+//			public void run(){
+//				try {
+//					String reply = csms.transferRecord(getName(), recordID, remoteCenterServerName);
+//					System.out.println(reply);
+//					writeToLog(reply);
+//					if(!reply.isEmpty()){
+//						Thread.currentThread().interrupt();
+//					}
+//				} catch (IOException_Exception e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//			}
+//		};
+//		thread.start();
+//	}
+
+	
 	/**
 	 * manager side call Server createTRecord through orb obj
 	 * @param firstName
@@ -122,7 +286,8 @@ public class ManagerClient {
 	 * @throws IOException_Exception 
 	 */
 	public void createTRecord(String firstName, String lastName, String address, 
-			  					String phone, Specialization special, Location loc) throws RemoteException, IOException, NotBoundException, IOException_Exception{
+			  					String phone, Specialization special, Location loc) throws RemoteException, IOException, NotBoundException, IOException_Exception {
+		
 		String result = csms.createTRecord(this.managerID, firstName, lastName, address, phone, special.toString(), loc.toString());
 		System.out.println(result);
 		writeToLog(result);
@@ -142,7 +307,7 @@ public class ManagerClient {
 	 * @throws IOException_Exception 
 	 */
 	public void createSRecord(String firstName, String lastName, Course course, 
-								Status status, String statusdate) throws IOException, RemoteException, NotBoundException, IOException_Exception{
+								Status status, String statusdate) throws IOException, RemoteException, NotBoundException, IOException_Exception {
 		String reply = csms.createSRecord(this.managerID, firstName, lastName, course.toString(), status.toString(), statusdate);
 		System.out.println(reply);
 		writeToLog(reply);
@@ -155,7 +320,7 @@ public class ManagerClient {
 	 * @throws NotBoundException
 	 * @throws IOException_Exception 
 	 */
-	public void getRecordCounts() throws IOException, RemoteException, NotBoundException, IOException_Exception{
+	public void getRecordCounts() throws IOException, RemoteException, NotBoundException, IOException_Exception {
 		String reply = csms.getRecordCounts(this.managerID);
 		System.out.println(reply);
 		writeToLog(reply);
@@ -171,7 +336,7 @@ public class ManagerClient {
 	 * @throws NotBoundException
 	 * @throws IOException_Exception 
 	 */
-	public void EditRecord(String recordID, String fieldName, String newValue) throws IOException, RemoteException, NotBoundException, IOException_Exception{
+	public void EditRecord(String recordID, String fieldName, String newValue) throws IOException, RemoteException, NotBoundException, IOException_Exception {
 		String reply = csms.editRecord(this.managerID,recordID, fieldName, newValue);
 		System.out.println(reply);
 		writeToLog(reply);
@@ -187,7 +352,7 @@ public class ManagerClient {
 	 * @throws NotBoundException
 	 * @throws IOException_Exception 
 	 */
-	public void transferRecord(String recordID, String remoteCenterServerName) throws IOException, RemoteException, NotBoundException, IOException_Exception{
+	public void transferRecord(String recordID, String remoteCenterServerName) throws IOException, RemoteException, NotBoundException, IOException_Exception {
 		String reply = csms.transferRecord(this.managerID, recordID, remoteCenterServerName);
 		System.out.println(reply);
 		writeToLog(reply);
